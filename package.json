@@ -1,0 +1,58 @@
+{
+  "name": "@tokportal/node",
+  "version": "0.1.1",
+  "description": "Generated TypeScript/Node SDK for the TokPortal public API.",
+  "homepage": "https://developers.tokportal.com/sdks-cli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tokportal/tokportal-node.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tokportal/tokportal-node/issues"
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "LICENSE",
+    "README.md",
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "tiktok",
+    "instagram",
+    "youtube",
+    "social-media",
+    "api",
+    "ai-agents",
+    "automation",
+    "sdk",
+    "tokportal"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "typescript": "^5"
+  }
+}
