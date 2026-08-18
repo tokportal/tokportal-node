@@ -24,27 +24,41 @@ import { TokPortal } from "@tokportal/node";
 
 const tokportal = new TokPortal({ apiKey: process.env.TOKPORTAL_API_KEY! });
 
-// 1. Create a bundle (a mission: N videos on a fresh, managed TikTok account)
+// 1. Create a bundle: a fresh managed TikTok account in the USA + 1 video slot.
+//    Credits are debited now; the account manager is assigned at publish time.
 const bundle = await tokportal.bundles.create({
   bundle_type: "account_and_videos",
   platform: "tiktok",
   country: "USA",
+  title: "US launch",
   videos_quantity: 1,
 });
+const bundleId = bundle.data.id;
 
-// 2. Upload the video straight from disk
-const upload = await tokportal.uploads.videoDirectFile("./launch.mp4", bundle.data.id, "video/mp4");
+// 2. Upload the video straight from disk -> public_url
+const upload = await tokportal.uploads.videoDirectFile("./launch.mp4", bundleId, "video/mp4");
 
-// 3. Configure video slot 1 and publish the bundle to the account-manager network
-await tokportal.bundles.configureVideo(bundle.data.id, 1, {
-  video_url: upload.data.url,
-  caption: "Day 1 🚀",
+// 3. Configure the account profile and video slot 1, then publish
+await tokportal.bundles.configureAccount(bundleId, {
+  username: "mybrand.us",
+  visible_name: "My Brand",
+  biography: "Official account",
 });
-await tokportal.bundles.publish(bundle.data.id);
+await tokportal.bundles.configureVideo(bundleId, 1, {
+  video_type: "video",
+  video_url: upload.data.public_url,
+  description: "Day 1 — launching in the US 🚀 #launch",
+  target_publish_date: "2026-09-01",
+});
+await tokportal.bundles.publish(bundleId);
 
-// 4. Later: read the managed account back (username, profile URL, status)
-const { data: bundleWithAccount } = await tokportal.bundles.get(bundle.data.id);
-console.log(bundleWithAccount.status, bundleWithAccount.account?.username);
+// 4. Later (webhook `account.in_review` / `account.finalized`, or polling):
+//    saved_account_id is the real delivered account -> read it back
+const { data: current } = await tokportal.bundles.get(bundleId);
+if (current.saved_account_id) {
+  const { data: account } = await tokportal.accounts.get(current.saved_account_id);
+  console.log(account.username, account.profile_url);
+}
 ```
 
 > Method names above follow the generated resource map (`bundles`, `uploads`, `accounts`, `analytics`, `webhooks`). If a helper does not exist for an operation, use `tokportal.requestOperation("<operationId>", { path, query, body })` — see below.
