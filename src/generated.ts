@@ -84,7 +84,7 @@ export type UploadImageFromUrlRequest = {
 
 export type CreateAnalyticsReportRequest = {
   title?: string | null;
-  template?: string | null;
+  template?: "executive" | "agency" | "creator" | "minimal" | "growth" | "board" | null;
   brandName?: string | null;
   brandAccent?: string | null;
   accountIds?: Array<string>;
